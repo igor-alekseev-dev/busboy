@@ -87,6 +87,14 @@ var group = path.basename(__filename, '.js') + '/';
     expected: ['multipart/form-data', ['charset', 'utf-8'], ['boundary', '0xKhTmLbOuNdArY']],
     what: 'Multiple non-quoted parameters'
   },
+  { source: 'content-disposition: form-data; name="file"; filename="نموذج طلب عضوية السوق.pdf"',
+    expected: ['content-disposition:form-data', [ 'name', 'file' ], ['filename', 'نموذج طلب عضوية السوق.pdf']],
+    what: 'Keep parameter without specified encoding as is'
+  },
+  { source: "content-disposition: form-data; name=\"file\"; filename=\"نموذج طلب عضوية السوق.pdf\"; filename*=utf-8''%D9%86%D9%85%D9%88%D8%B0%D8%AC%20%D8%B7%D9%84%D8%A8%20%D8%B9%D8%B6%D9%88%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B3%D9%88%D9%82.pdf",
+    expected: ['content-disposition:form-data', [ 'name', 'file' ], ['filename', 'نموذج طلب عضوية السوق.pdf'], ['filename', 'نموذج طلب عضوية السوق.pdf']],
+    what: 'Keep parameters with same name'
+  },
 ].forEach(function(v) {
   var result = parseParams(v.source),
       msg = '[' + group + v.what + ']: parsed parameters mismatch.\n'
